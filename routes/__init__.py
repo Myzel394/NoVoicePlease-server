@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from . import download
+from . import audio
 
 router = APIRouter()
 
-router.include_router(download.router, tags=["download_video"], prefix="/download-video")
+router.include_router(audio.router, tags=["audio"])

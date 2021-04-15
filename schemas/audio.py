@@ -1,10 +1,10 @@
 from models import DefaultModel
 
 __all__ = [
-    "VideoDownloadResponse"
+    "AudioDownloadResponse"
 ]
 
 
-class VideoDownloadResponse(DefaultModel):
+class AudioDownloadResponse(DefaultModel):
     file_url: str
     size: int
