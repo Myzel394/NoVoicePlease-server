@@ -1,8 +1,8 @@
-import os
 from typing import *
 
 from youtube_dl import YoutubeDL
 
+import config
 from constants import OUTPUT_FOLDER
 from .audio_trim import trim_audio_from_sponsorblock
 from .folder import build_audio_filename, build_audio_output_path
@@ -31,7 +31,7 @@ def _does_file_exists(video_id: str, filename: str) -> bool:
 
 def get_downloaded_video_ids() -> Set[str]:
     return {
-        folder.name for folder in os.scandir(OUTPUT_FOLDER) if folder.is_dir()
+        folder.name for folder in config.OUTPUT_FOLDER.iterdir() if folder.is_dir()
     }
 
 
@@ -69,10 +69,12 @@ def download_and_extract_video(filename: str, video_id: str, quality: int) -> No
 def process_audio_download(
         video_id: str,
         skip_segments: bool,
-        quality: int = 320,
+        quality: int = config.DEFAULT_AUDIO_QUALITY,
 ) -> None:
     filename = build_audio_filename(skip_segments, False)
     path = build_audio_output_path(video_id=video_id, filename=filename)
+    
+    path.parent.mkdir(exist_ok=True, parents=True)
     
     download_and_extract_video(
         filename=filename,

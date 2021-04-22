@@ -3,14 +3,15 @@ from pathlib import Path
 
 from spleeter.separator import Separator
 
+import config
 from .folder import build_audio_filename, build_audio_output_path, generate_temp_folder
 
 __all__ = [
     "extract_audio", "process_audio_extraction"
 ]
 
-DEFAULT_SEPARATOR = Separator("spleeter:2stems")
-INSTRUMENTAL_FILENAME = "accompaniment.wav"
+DEFAULT_SEPARATOR = Separator(config.SPLEETER_SEPARATION_METHOD)
+INSTRUMENTAL_FILENAME = config.SPLEETER_TARGETED_FILE
 
 
 def extract_audio(

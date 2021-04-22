@@ -1,22 +1,13 @@
-import os
-
-from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
+import config
 from routes import router
-from utils.startup import startup_initialize
-
-load_dotenv()
-
-debug = bool(os.getenv("DEBUG", 1))
 
 
 def get_application() -> FastAPI:
-    startup_initialize()
-    
     application = FastAPI(
-        debug=debug,
+        debug=config.IS_DEBUG,
         title="YT2Instrumental",
     )
     
@@ -30,7 +21,7 @@ def get_application() -> FastAPI:
 app = get_application()
 
 if __name__ == "__main__":
-    if debug:
+    if config.IS_DEBUG:
         import uvicorn
         
         uvicorn.run(app)

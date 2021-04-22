@@ -5,6 +5,7 @@ from typing import *
 import librosa
 
 from constants import DURATION_THRESHOLD, TEMP_PATH
+from . import generate_random_identifier
 from .segments import get_segments, Segment
 
 __all__ = [
@@ -50,6 +51,7 @@ def get_segments_as_duration(segments: List[Segment]) -> List[Segment]:
 
 
 def prepare_ffmpeg_trim_command(segments: List[Segment], filename: str, video_id: str) -> Tuple[str, List[Path]]:
+    # Filenames of true audio segments
     filenames = [
         f"{video_id}_{index}_{start}_{duration}.wav"
         for index, (start, duration) in enumerate(segments)
@@ -58,22 +60,22 @@ def prepare_ffmpeg_trim_command(segments: List[Segment], filename: str, video_id
         TEMP_PATH / name
         for name in filenames
     ]
-    file_parts_command = " ".join([
+    filenames_parts_command = " ".join([
         f"-ss {start} -t {duration} {path.absolute()}"
         for (start, duration), path in zip(segments, filenames_with_folder)
     ])
-    command = f"ffmpeg -y -i ./{filename} {file_parts_command}"
+    command = f"ffmpeg -y -i ./{filename} {filenames_parts_command}"
     
     return command, filenames_with_folder
 
 
-def prepare_ffmpeg_concatenate_command(files: List[Path], identifier: str, output: Path) -> Tuple[str, Path]:
+def prepare_ffmpeg_concatenate_command(files: List[Path], output: Path) -> Tuple[str, Path]:
     # Create list file
     content = "\n".join([
         f"file {file.absolute()}"
         for file in files
     ])
-    file = TEMP_PATH / "list_files" / f"{identifier}.txt"
+    file = TEMP_PATH / "list_files" / f"{generate_random_identifier()}.txt"
     file.parent.mkdir(parents=True, exist_ok=True)
     file.write_text(content)
     
@@ -84,13 +86,12 @@ def prepare_ffmpeg_concatenate_command(files: List[Path], identifier: str, outpu
 
 def trim_audio_with_segments(
         segments: List[Segment],
-        # TODO!
-        audio_path: Path,
-        output_path: Path,
+        audio: Path,
+        output: Path,
         video_id: str
 ) -> None:
-    path = str(audio_path)
-    folder = str(audio_path.parent.absolute())
+    path = str(audio)
+    folder = str(output.parent.absolute())
     
     duration = librosa.get_duration(filename=path)
     
@@ -102,15 +103,14 @@ def trim_audio_with_segments(
     trim_command, files = prepare_ffmpeg_trim_command(
         segments=durations,
         video_id=video_id,
-        filename=audio_path.name
+        filename=output.name
     )
     subprocess.run(trim_command, shell=True, cwd=folder)
     
     # Concatenate these parts together
     concatenate_command, list_file = prepare_ffmpeg_concatenate_command(
         files=files,
-        identifier=video_id,
-        output=output_path
+        output=output
     )
     subprocess.run(concatenate_command, shell=True, cwd=folder)
     
@@ -131,7 +131,7 @@ def trim_audio_from_sponsorblock(
     if len(segments) > 0:
         trim_audio_with_segments(
             segments=segments,
-            audio_path=audio,
-            output_path=output,
+            audio=audio,
+            output=output,
             video_id=video_id
         )

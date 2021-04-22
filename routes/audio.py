@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Path, Query
 from starlette.responses import RedirectResponse
 
+import config
 from utils import (
     build_audio_url, is_audio_downloaded, is_audio_extracted, process_audio_download,
     process_audio_extraction,
@@ -27,8 +28,9 @@ async def download_audio(
             # TODO: Check if id is given using api
             regex=r"^[0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]$"
         ),
-        quality: int = Query(ge=65, le=320, default=320),
-        skip_segments: bool = Query(True),
+        quality: int = Query(ge=config.MIN_AUDIO_QUALITY, le=config.MAX_AUDIO_QUALITY,
+                             default=config.DEFAULT_AUDIO_QUALITY),
+        skip_segments: bool = Query(config.DEFAULT_SKIP_SEGMENTS),
 ):
     redirect = RedirectResponse(url=build_audio_url(video_id, skip_segments, False))
     
@@ -58,7 +60,7 @@ async def extract_instrumental(
             # TODO: Check if id is given using api
             regex=r"^[0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]$"
         ),
-        skip_segments: bool = Query(True),
+        skip_segments: bool = Query(config.DEFAULT_SKIP_SEGMENTS),
 ):
     redirect = RedirectResponse(url=build_audio_url(video_id, skip_segments, True))
     
