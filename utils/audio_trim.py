@@ -5,7 +5,7 @@ from typing import *
 import librosa
 
 from constants import DURATION_THRESHOLD, TEMP_PATH
-from . import generate_random_identifier
+from .folder import generate_random_identifier
 from .segments import get_segments, Segment
 
 __all__ = [

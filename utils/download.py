@@ -3,7 +3,6 @@ from typing import *
 from youtube_dl import YoutubeDL
 
 import config
-from constants import OUTPUT_FOLDER
 from .audio_trim import trim_audio_from_sponsorblock
 from .folder import build_audio_filename, build_audio_output_path
 
@@ -19,7 +18,7 @@ def _does_file_exists(video_id: str, filename: str) -> bool:
         # Video not downloaded
         return False
     
-    folder = OUTPUT_FOLDER / video_id
+    folder = config.OUTPUT_FOLDER / video_id
     audio_file = folder / filename
     
     if not audio_file.exists():
@@ -30,6 +29,8 @@ def _does_file_exists(video_id: str, filename: str) -> bool:
 
 
 def get_downloaded_video_ids() -> Set[str]:
+    config.OUTPUT_FOLDER.mkdir(parents=True, exist_ok=True)
+    
     return {
         folder.name for folder in config.OUTPUT_FOLDER.iterdir() if folder.is_dir()
     }

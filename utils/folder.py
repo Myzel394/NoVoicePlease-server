@@ -2,7 +2,8 @@ import random
 import string
 from pathlib import Path
 
-from constants import OUTPUT_FOLDER, TEMP_PATH
+import config
+from constants import TEMP_PATH
 
 __all__ = [
     "build_audio_filename", "build_audio_output_path", "generate_random_identifier", "generate_temp_folder"
@@ -28,7 +29,7 @@ def build_audio_filename(skip_segments: bool, instrumental: bool) -> str:
 
 
 def build_audio_output_path(video_id: str, filename: str) -> Path:
-    return OUTPUT_FOLDER / video_id / filename
+    return config.OUTPUT_FOLDER / video_id / filename
 
 
 def generate_random_identifier() -> str:
