@@ -1,7 +1,7 @@
 from pathlib import Path
 
 __all__ = [
-    "BASE_FOLDER", "STATIC_FOLDER", "OUTPUT_FOLDER"
+    "BASE_FOLDER", "STATIC_FOLDER", "OUTPUT_FOLDER", "DURATION_THRESHOLD"
 ]
 
 BASE_FOLDER = Path(__file__).parent

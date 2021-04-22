@@ -1,8 +1,8 @@
 import json
+import urllib.parse
 from typing import *
 
 import requests
-import urllib.parse
 
 __all__ = [
     "get_segments", "Segment"
@@ -34,7 +34,7 @@ def parse_segment(data: List[dict]) -> List[Segment]:
         (element["segment"][0], element["segment"][1])
         for element in data
     ]
-    
+
 
 def get_segments(video_id: str) -> List[Segment]:
     url = build_segments_url(video_id)
@@ -46,4 +46,3 @@ def get_segments(video_id: str) -> List[Segment]:
     segments = parse_segment(response.json())
     
     return segments
-

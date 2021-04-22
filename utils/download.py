@@ -67,9 +67,9 @@ def download_and_extract_video(filename: str, video_id: str, quality: int) -> No
 
 
 def process_audio_download(
-    video_id: str,
-    quality: int,
-    skip_segments: bool,
+        video_id: str,
+        quality: int,
+        skip_segments: bool,
 ) -> None:
     filename = build_audio_filename(skip_segments, False)
     path = build_audio_output_path(video_id=video_id, filename=filename)

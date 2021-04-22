@@ -1,4 +1,5 @@
 from pathlib import Path
+
 from constants import OUTPUT_FOLDER
 
 __all__ = [

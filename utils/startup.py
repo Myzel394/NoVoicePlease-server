@@ -1,5 +1,6 @@
-from constants import OUTPUT_FOLDER
 import logging
+
+from constants import OUTPUT_FOLDER
 
 __all__ = [
     "startup_initialize"

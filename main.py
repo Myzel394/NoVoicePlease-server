@@ -25,7 +25,7 @@ def get_application() -> FastAPI:
     @application.on_event("startup")
     async def handle_startup():
         startup_initialize()
-
+    
     return application
 
 
@@ -36,4 +36,3 @@ if __name__ == "__main__":
         import uvicorn
         
         uvicorn.run(app)
-

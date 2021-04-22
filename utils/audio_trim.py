@@ -1,12 +1,12 @@
 import subprocess
 import tempfile
-from typing import *
 from pathlib import Path
+from typing import *
 
 import librosa
 
 from constants import DURATION_THRESHOLD
-from .segments import Segment, get_segments
+from .segments import get_segments, Segment
 
 __all__ = [
     "trim_audio_with_segments", "trim_audio_from_sponsorblock"
@@ -81,15 +81,15 @@ def prepare_ffmpeg_concatenate_command(files: List[Path], identifier: str, outpu
     file.write_text(content)
     
     command = f"ffmpeg -y -f concat -safe 0 -i {file.absolute()} -c copy {output.absolute()}"
-
+    
     return command, file
 
 
 def trim_audio_with_segments(
-    segments: List[Segment],
-    audio_path: Path,
-    output_path: Path,
-    video_id: str
+        segments: List[Segment],
+        audio_path: Path,
+        output_path: Path,
+        video_id: str
 ) -> None:
     path = str(audio_path)
     folder = str(audio_path.parent.absolute())
@@ -124,9 +124,9 @@ def trim_audio_with_segments(
 
 
 def trim_audio_from_sponsorblock(
-    audio: Path,
-    output: Path,
-    video_id: str
+        audio: Path,
+        output: Path,
+        video_id: str
 ) -> None:
     segments = get_segments(video_id)
     
