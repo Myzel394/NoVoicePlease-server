@@ -32,7 +32,6 @@ async def download_audio(
     if is_audio_downloaded(video_id, skip_segments):
         return redirect
 
-    print("=" * 200)
     process_audio_download(
         video_id=video_id,
         quality=quality,
