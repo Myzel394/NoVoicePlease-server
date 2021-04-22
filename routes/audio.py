@@ -2,6 +2,7 @@ from fastapi import APIRouter, Path, Query
 from starlette.responses import RedirectResponse
 
 import config
+from schema import StatusSchema
 from utils import (
     build_audio_url, is_audio_downloaded, is_audio_extracted, process_audio_download,
     process_audio_extraction,
@@ -79,3 +80,25 @@ async def extract_instrumental(
     )
     
     return redirect
+
+
+@router.get(
+    "/status/{video_id}",
+    name="Returns what files are available for that video",
+    status_code=200,
+    response_model=StatusSchema
+)
+async def status(
+        video_id: str = Path(
+            None,
+            title="ID of the video (what you can see in the url)",
+            # TODO: Check if id is given using api
+            regex=r"^[0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]$"
+        ),
+):
+    return {
+        "normal_full": is_audio_downloaded(video_id, skip_segments=False),
+        "normal_skipped_segments": is_audio_downloaded(video_id, skip_segments=True),
+        "instrumental_full": is_audio_extracted(video_id, skip_segments=False),
+        "instrumental_skipped_segments": is_audio_extracted(video_id, skip_segments=True)
+    }
