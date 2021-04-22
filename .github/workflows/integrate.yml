@@ -1,0 +1,30 @@
+name: YT2Instrumental-Server CI:CD Workflow
+
+on: [ push ]
+
+jobs:
+    healt-check-job:
+        runs-on: ubuntu-latest
+
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v2
+            -   name: Cache dependency
+                uses: actions/cache@v2
+                with:
+                    path: ~/.cache/pip
+                    key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+                    restore-keys: |
+                        ${{ runner.os }}-pip-
+            # Python
+            -   name: Setup python environment
+                uses: actions/setup-python@v2
+                with:
+                    python-version: '3.9'
+            -   name: Check Python version
+                run: python --version
+            -   name: Install requirements
+                run: pip install -r requirements.txt
+
+            -   name: Run Tests
+                run: python -m unittest
