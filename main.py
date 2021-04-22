@@ -13,6 +13,8 @@ debug = bool(os.getenv("DEBUG", 1))
 
 
 def get_application() -> FastAPI:
+    startup_initialize()
+    
     application = FastAPI(
         debug=debug,
         title="YT2Instrumental",
@@ -21,10 +23,6 @@ def get_application() -> FastAPI:
     application.include_router(router)
     
     application.mount("/static", StaticFiles(directory="static"), name="static")
-    
-    @application.on_event("startup")
-    async def handle_startup():
-        startup_initialize()
     
     return application
 

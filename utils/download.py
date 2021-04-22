@@ -8,7 +8,7 @@ from .audio_trim import trim_audio_from_sponsorblock
 from .folder import build_audio_filename, build_audio_output_path
 
 __all__ = [
-    "get_downloaded_video_ids", "is_audio_downloaded", "is_video_extracted", "build_opts", "process_audio_download"
+    "get_downloaded_video_ids", "is_audio_downloaded", "is_audio_extracted", "build_opts", "process_audio_download"
 ]
 
 
@@ -39,7 +39,7 @@ def is_audio_downloaded(video_id: str, skip_segments: bool) -> bool:
     return _does_file_exists(video_id, build_audio_filename(skip_segments, False))
 
 
-def is_video_extracted(video_id: str, skip_segments: bool) -> bool:
+def is_audio_extracted(video_id: str, skip_segments: bool) -> bool:
     return _does_file_exists(video_id, build_audio_filename(skip_segments, True))
 
 
@@ -68,8 +68,8 @@ def download_and_extract_video(filename: str, video_id: str, quality: int) -> No
 
 def process_audio_download(
         video_id: str,
-        quality: int,
         skip_segments: bool,
+        quality: int = 320,
 ) -> None:
     filename = build_audio_filename(skip_segments, False)
     path = build_audio_output_path(video_id=video_id, filename=filename)

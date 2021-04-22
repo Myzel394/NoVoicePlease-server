@@ -1,18 +1,15 @@
 import subprocess
-import tempfile
 from pathlib import Path
 from typing import *
 
 import librosa
 
-from constants import DURATION_THRESHOLD
+from constants import DURATION_THRESHOLD, TEMP_PATH
 from .segments import get_segments, Segment
 
 __all__ = [
     "trim_audio_with_segments", "trim_audio_from_sponsorblock"
 ]
-
-TEMP_PATH = Path(tempfile.gettempdir()) / "yt_to_instrumental"
 
 
 # Input: [(10, 15)], 20
@@ -87,6 +84,7 @@ def prepare_ffmpeg_concatenate_command(files: List[Path], identifier: str, outpu
 
 def trim_audio_with_segments(
         segments: List[Segment],
+        # TODO!
         audio_path: Path,
         output_path: Path,
         video_id: str
