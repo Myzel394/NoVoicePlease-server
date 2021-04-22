@@ -3,11 +3,12 @@ from typing import *
 
 from youtube_dl import YoutubeDL
 
-from constants import OUTPUT_FOLDER, AUDIO_FILE_NAME, INSTRUMENTAL_AUDIO_FILE_NAME
-from .folder import build_audio_output_path
+from constants import OUTPUT_FOLDER
+from .audio_trim import trim_audio_from_sponsorblock
+from .folder import build_audio_filename, build_audio_output_path
 
 __all__ = [
-    "get_downloaded_video_ids", "is_audio_downloaded", "is_video_extracted", "build_opts"
+    "get_downloaded_video_ids", "is_audio_downloaded", "is_video_extracted", "build_opts", "process_audio_download"
 ]
 
 
@@ -34,28 +35,54 @@ def get_downloaded_video_ids() -> Set[str]:
     }
 
 
-def is_audio_downloaded(video_id: str) -> bool:
-    return _does_file_exists(video_id, AUDIO_FILE_NAME)
+def is_audio_downloaded(video_id: str, skip_segments: bool) -> bool:
+    return _does_file_exists(video_id, build_audio_filename(skip_segments, False))
 
 
-def is_video_extracted(video_id: str) -> bool:
-    return _does_file_exists(video_id, INSTRUMENTAL_AUDIO_FILE_NAME)
+def is_video_extracted(video_id: str, skip_segments: bool) -> bool:
+    return _does_file_exists(video_id, build_audio_filename(skip_segments, True))
 
 
-def build_opts(video_id: str, quality: int) -> dict:
+def build_opts(video_id: str, filename: str, quality: int) -> dict:
     return {
         "format": 'bestaudio/best',
-        "outtmpl": str(build_audio_output_path(video_id)),
+        "outtmpl": str(build_audio_output_path(video_id, filename).absolute()),
         "postprocessors": [{
             "key": "FFmpegExtractAudio",
-            "preferredcodec": "mp3",
+            "preferredcodec": "wav",
             "preferredquality": str(quality),
         }],
     }
 
 
-def download_video(video_id: str, quality: int) -> None:
-    options = build_opts(video_id, quality)
+def download_and_extract_video(filename: str, video_id: str, quality: int) -> None:
+    options = build_opts(
+        video_id=video_id,
+        filename=filename,
+        quality=quality
+    )
     
     with YoutubeDL(options) as downloader:
         downloader.download([video_id])
+
+
+def process_audio_download(
+    video_id: str,
+    quality: int,
+    skip_segments: bool,
+) -> None:
+    filename = build_audio_filename(skip_segments, False)
+    path = build_audio_output_path(video_id=video_id, filename=filename)
+    
+    download_and_extract_video(
+        filename=filename,
+        video_id=video_id,
+        quality=quality
+    )
+    
+    if skip_segments:
+        trim_audio_from_sponsorblock(
+            audio=path,
+            output=path,
+            video_id=video_id
+        )

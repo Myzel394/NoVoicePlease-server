@@ -9,10 +9,10 @@ from utils.startup import startup_initialize
 
 load_dotenv()
 
+debug = bool(os.getenv("DEBUG", 1))
+
 
 def get_application() -> FastAPI:
-    debug = bool(os.getenv("DEBUG", 1))
-    
     application = FastAPI(
         debug=debug,
         title="YT2Instrumental",
@@ -31,4 +31,9 @@ def get_application() -> FastAPI:
 
 app = get_application()
 
+if __name__ == "__main__":
+    if debug:
+        import uvicorn
+        
+        uvicorn.run(app)
 
