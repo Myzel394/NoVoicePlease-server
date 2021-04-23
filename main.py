@@ -1,7 +1,5 @@
-# noinspection PyUnresolvedReferences
-import import_check
-
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 import config
@@ -12,6 +10,14 @@ def get_application() -> FastAPI:
     application = FastAPI(
         debug=config.IS_DEBUG,
         title="YT2Instrumental",
+    )
+    
+    application.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=False,
+        allow_methods=["GET"],
+        allow_headers=[],
     )
     
     application.include_router(router)

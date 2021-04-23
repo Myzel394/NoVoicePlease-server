@@ -31,7 +31,7 @@ async def download_audio(
         ),
         quality: int = Query(ge=config.MIN_AUDIO_QUALITY, le=config.MAX_AUDIO_QUALITY,
                              default=config.DEFAULT_AUDIO_QUALITY),
-        skip_segments: bool = Query(config.DEFAULT_SKIP_SEGMENTS),
+        skip_segments: bool = config.DEFAULT_SKIP_SEGMENTS,
 ):
     redirect = RedirectResponse(url=build_audio_url(video_id, skip_segments, False))
     
@@ -61,7 +61,7 @@ async def extract_instrumental(
             # TODO: Check if id is given using api
             regex=r"^[0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]$"
         ),
-        skip_segments: bool = Query(config.DEFAULT_SKIP_SEGMENTS),
+        skip_segments: bool = config.DEFAULT_SKIP_SEGMENTS,
 ):
     redirect = RedirectResponse(url=build_audio_url(video_id, skip_segments, True))
     
