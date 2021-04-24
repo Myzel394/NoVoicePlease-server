@@ -74,7 +74,7 @@ scipy==1.4.1
 six==1.15.0
 sniffio==1.2.0
 SoundFile==0.10.3.post1
-spleeter==2.2.2
+spleeter
 starlette==0.13.6
 tensorboard==2.5.0
 tensorboard-data-server==0.6.0
