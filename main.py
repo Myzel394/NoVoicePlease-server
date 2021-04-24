@@ -33,4 +33,4 @@ if __name__ == "__main__":
     if config.IS_DEBUG:
         import uvicorn
         
-        uvicorn.run(app)
+        uvicorn.run(app, port=5612)
