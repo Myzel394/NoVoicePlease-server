@@ -47,6 +47,8 @@ def is_audio_extracted(video_id: str, skip_segments: bool) -> bool:
 def build_opts(video_id: str, filename: str, quality: int) -> dict:
     return {
         "format": 'bestaudio/best',
+        "quiet": True,
+        "no_warnings": True,
         "outtmpl": str(build_audio_output_path(video_id, filename).absolute()),
         "postprocessors": [{
             "key": "FFmpegExtractAudio",
