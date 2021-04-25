@@ -3,15 +3,15 @@ from pathlib import Path
 
 from spleeter.separator import Separator
 
-import config
+import constants
 from .folder import build_audio_filename, build_audio_output_path, generate_temp_folder
 
 __all__ = [
     "extract_audio", "process_audio_extraction"
 ]
 
-DEFAULT_SEPARATOR = Separator(config.SPLEETER_SEPARATION_METHOD)
-INSTRUMENTAL_FILENAME = config.SPLEETER_TARGETED_FILE
+DEFAULT_SEPARATOR = Separator(constants.SPLEETER_SEPARATION_METHOD)
+INSTRUMENTAL_FILENAME = constants.SPLEETER_TARGETED_FILE
 
 
 def extract_audio(

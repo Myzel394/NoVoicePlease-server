@@ -21,13 +21,11 @@ def value(name: str, default: str) -> str:
 # !!!ATTENTION!!!
 
 OUTPUT_FOLDER = Path.cwd().joinpath(value("OUTPUT_FOLDER", "./static/output")).relative_to(BASE_FOLDER)
-SPLEETER_SEPARATION_METHOD = value("SPLEETER_SEPARATION_METHOD", "spleeter:2stems")
-SPLEETER_TARGETED_FILE = value("SPLEETER_TARGETED_FILE", "accompaniment.wav")
 SEGMENTS_API_URL = value("SEGMENTS_API_URL", "https://sponsor.ajay.app/api/skipSegments")
 SEGMENTS_CATEGORIES = value("SEGMENTS_CATEGORIES", "sponsor,intro,outro,selfpromo,interaction,music_offtopic") \
     .split(",")
-IS_DEBUG = bool(value("DEBUG", "1"))
+IS_DEBUG = bool(int(value("DEBUG", "0")))
 DEFAULT_AUDIO_QUALITY = int(value("DEFAULT_AUDIO_QUALITY", "320"))
 MIN_AUDIO_QUALITY = int(value("MIN_AUDIO_QUALITY", "65"))
 MAX_AUDIO_QUALITY = int(value("MAX_AUDIO_QUALITY", "320"))
-DEFAULT_SKIP_SEGMENTS = bool(value("DEFAULT_SKIP_SEGMENTS", "1"))
+DEFAULT_SKIP_SEGMENTS = bool(int(value("DEFAULT_SKIP_SEGMENTS", "1")))

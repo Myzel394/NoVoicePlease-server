@@ -2,9 +2,9 @@ from fastapi import APIRouter, Path, Query
 from starlette.responses import RedirectResponse
 
 import config
-from schema import StatusSchema
+from schema import DownloadedSchema, StatusSchema
 from utils import (
-    build_audio_url, is_audio_downloaded, is_audio_extracted, process_audio_download,
+    build_audio_url, get_downloaded_video_ids, is_audio_downloaded, is_audio_extracted, process_audio_download,
     process_audio_extraction,
 )
 
@@ -16,7 +16,7 @@ router = APIRouter()
 
 
 @router.get(
-    "/audio/{video_id}",
+    "/download/{video_id}",
     name="Audio download",
     response_description="Downloads the audio of the video and redirects to the static url of the downloaded audio "
                          "file.",
@@ -48,7 +48,7 @@ async def download_audio(
 
 
 @router.get(
-    "/instrumental/{video_id}",
+    "/extract/instrumental/{video_id}",
     name="Instrumental extraction",
     response_description="Extracts the instrumental part of the audio of the video. The audio will automatically be "
                          "downloaded with default settings if hasn't been downloaded before.",
@@ -101,4 +101,14 @@ async def status(
         "normal_skipped_segments": is_audio_downloaded(video_id, skip_segments=True),
         "instrumental_full": is_audio_extracted(video_id, skip_segments=False),
         "instrumental_skipped_segments": is_audio_extracted(video_id, skip_segments=True)
+    }
+
+
+@router.get(
+    "/downloaded",
+    response_model=DownloadedSchema,
+)
+async def config():
+    return {
+        "stored_ids": get_downloaded_video_ids()
     }
