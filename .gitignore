@@ -2,6 +2,6 @@ venv
 .idea
 */.idea
 static/**
-!static/.gitkeep
+!static/favicon.ico
 
 pretrained_models

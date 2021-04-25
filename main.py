@@ -23,6 +23,7 @@ def get_application() -> FastAPI:
     application.include_router(router)
     
     application.mount("/static", StaticFiles(directory="static"), name="static")
+    application.mount("/", StaticFiles(directory="static"), name="static-direct")
     
     return application
 
