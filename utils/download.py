@@ -1,47 +1,15 @@
-from typing import *
-
 from youtube_dl import YoutubeDL
 
 import config
+import constants
 from .audio_trim import trim_audio_from_sponsorblock
-from .folder import build_audio_filename, build_audio_output_path
+from .folder import (
+    build_audio_filename, build_audio_output_path, clear_space_if_needed,
+)
 
 __all__ = [
-    "get_downloaded_video_ids", "is_audio_downloaded", "is_audio_extracted", "build_opts", "process_audio_download"
+    "build_opts", "process_audio_download"
 ]
-
-
-def _does_file_exists(video_id: str, filename: str) -> bool:
-    video_ids = get_downloaded_video_ids()
-    
-    if video_id not in video_ids:
-        # Video not downloaded
-        return False
-    
-    folder = config.OUTPUT_FOLDER / video_id
-    audio_file = folder / filename
-    
-    if not audio_file.exists():
-        # Folder probably emptied
-        return False
-    
-    return True
-
-
-def get_downloaded_video_ids() -> Set[str]:
-    config.OUTPUT_FOLDER.mkdir(parents=True, exist_ok=True)
-    
-    return {
-        folder.name for folder in config.OUTPUT_FOLDER.iterdir() if folder.is_dir()
-    }
-
-
-def is_audio_downloaded(video_id: str, skip_segments: bool) -> bool:
-    return _does_file_exists(video_id, build_audio_filename(skip_segments, False))
-
-
-def is_audio_extracted(video_id: str, skip_segments: bool) -> bool:
-    return _does_file_exists(video_id, build_audio_filename(skip_segments, True))
 
 
 def build_opts(video_id: str, filename: str, quality: int) -> dict:
@@ -65,8 +33,17 @@ def download_and_extract_video(filename: str, video_id: str, quality: int) -> No
         quality=quality
     )
     
+    clear_space_if_needed()
+    
     with YoutubeDL(options) as downloader:
-        downloader.download([video_id])
+        def download():
+            downloader.download([video_id])
+        
+        for _ in range(constants.DOWNLOAD_RETRY_AMOUNT):
+            try:
+                download()
+            except OSError:
+                clear_space_if_needed()
 
 
 def process_audio_download(
