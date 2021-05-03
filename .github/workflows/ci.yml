@@ -2,6 +2,7 @@ name: CI:CD Workflow
 
 on:
     - push
+    - release
 
 jobs:
     unittests:
@@ -39,6 +40,10 @@ jobs:
             - name: Check Out Repo
               uses: actions/checkout@v2
 
+            - name: Set output
+              id: vars
+              run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+
             - name: Cache Docker layers
               uses: actions/cache@v2
               with:
@@ -59,5 +64,5 @@ jobs:
                 file: ./Dockerfile
                 builder: ${{ steps.buildx.outputs.name }}
                 push: true
-                tags:  ${{ secrets.DOCKER_HUB_USERNAME }}/novoiceplease-server:latest
+                tags:  ${{ secrets.DOCKER_HUB_USERNAME }}/novoiceplease-server:${{ steps.vars.outputs.tag }}
                 cache-from: type=local,src=/tmp/.buildx-cache
