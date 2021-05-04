@@ -1,6 +1,7 @@
 version: "3.9"
 services:
     web:
+        image: myzel394/novoiceplease-server
         build: .
         ports:
             - "5612:5612"
