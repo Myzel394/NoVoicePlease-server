@@ -65,10 +65,11 @@ jobs:
                   username: ${{ secrets.DOCKER_HUB_USERNAME }}
                   password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-            - name: Build container
-              run: docker-compose build --pull
-
-            - name: Publish container
-              run: docker-compose push
-              env:
-                  DOCKER_PUBLISH_VERSION: ${{ steps.vars.outputs.tag }}
+            - name: Build and push
+              uses: docker/build-push-action@v2
+              with:
+                context: .
+                file: ./Dockerfile
+                platforms: linux/amd64,linux/arm64
+                push: true
+                tags: myzel394/novoiceplease-server:latest,myzel394/novoiceplease-server:${{ steps.vars.outputs.tag }}
