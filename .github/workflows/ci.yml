@@ -70,3 +70,5 @@ jobs:
 
             - name: Publish container
               run: docker-compose push
+              env:
+                  DOCKER_PUBLISH_VERSION: ${{ steps.vars.outputs.tag }}
