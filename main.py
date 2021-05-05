@@ -9,7 +9,7 @@ from routes import router
 def get_application() -> FastAPI:
     application = FastAPI(
         debug=config.IS_DEBUG,
-        title="YT2Instrumental",
+        title="NoVoicePlease Server",
     )
     
     application.add_middleware(
