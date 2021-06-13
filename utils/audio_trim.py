@@ -17,28 +17,28 @@ __all__ = [
 # Output: [(0, 10), (15, 20)]
 def get_true_audio_segments(non_audio_segments: List[Segment], duration: float) -> List[Segment]:
     true_audio_segments = []
-    
+
     # Gets times for previous true audio segments
     for index, segment in enumerate(non_audio_segments):
         is_first = index == 0
-        
+
         start = 0 if is_first else non_audio_segments[index - 1][1]
         end = segment[0]
         true_audio_segments.append((start, end))
-    
+
     # Gets the last audio segment
     last_segment = non_audio_segments[-1]
     start = last_segment[1]
     end = duration
     true_audio_segments.append((start, end))
-    
+
     # Remove non-durational segments
     true_audio_segments = [
         segment
         for segment in true_audio_segments
         if segment[0] != segment[1]
     ]
-    
+
     return true_audio_segments
 
 
@@ -65,7 +65,7 @@ def prepare_ffmpeg_trim_command(segments: List[Segment], filename: str, video_id
         for (start, duration), path in zip(segments, filenames_with_folder)
     ])
     command = f"ffmpeg -y -i ./{filename} {filenames_parts_command}"
-    
+
     return command, filenames_with_folder
 
 
@@ -78,9 +78,9 @@ def prepare_ffmpeg_concatenate_command(files: List[Path], output: Path) -> Tuple
     file = TEMP_PATH / "list_files" / f"{generate_random_identifier()}.txt"
     file.parent.mkdir(parents=True, exist_ok=True)
     file.write_text(content)
-    
+
     command = f"ffmpeg -y -f concat -safe 0 -i {file.absolute()} -c copy {output.absolute()}"
-    
+
     return command, file
 
 
@@ -92,13 +92,13 @@ def trim_audio_with_segments(
 ) -> None:
     path = str(audio)
     folder = str(output.parent.absolute())
-    
+
     duration = librosa.get_duration(filename=path)
-    
+
     # Get true audio segments
     true_audio_segments = get_true_audio_segments(segments, duration)
     durations = get_segments_as_duration(true_audio_segments)
-    
+
     # Cutout non-audio parts
     trim_command, files = prepare_ffmpeg_trim_command(
         segments=durations,
@@ -106,17 +106,17 @@ def trim_audio_with_segments(
         filename=output.name
     )
     subprocess.run(trim_command, shell=True, cwd=folder)
-    
+
     # Concatenate these parts together
     concatenate_command, list_file = prepare_ffmpeg_concatenate_command(
         files=files,
         output=output
     )
     subprocess.run(concatenate_command, shell=True, cwd=folder)
-    
+
     # Clean up
     temp_files = files + [list_file]
-    
+
     for file in temp_files:
         file.unlink(missing_ok=True)
 
@@ -127,7 +127,7 @@ def trim_audio_from_sponsorblock(
         video_id: str
 ) -> None:
     segments = get_segments(video_id)
-    
+
     if len(segments) > 0:
         trim_audio_with_segments(
             segments=segments,

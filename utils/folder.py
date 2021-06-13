@@ -47,8 +47,9 @@ def generate_temp_folder() -> Path:
 
 def clear_up_downloads() -> None:
     downloaded_ids = get_downloaded_video_ids()
-    delete_ids = random.sample(downloaded_ids, min(DELETE_AMOUNT_ON_DELETE_FUNCTION_CALL, len(downloaded_ids)))
-    
+    delete_ids = random.sample(downloaded_ids, min(
+        DELETE_AMOUNT_ON_DELETE_FUNCTION_CALL, len(downloaded_ids)))
+
     for delete_id in delete_ids:
         folder = config.OUTPUT_FOLDER / delete_id
         shutil.rmtree(str(folder))
@@ -62,7 +63,7 @@ def get_remaining_space() -> int:
 def clear_space_if_needed() -> True:
     """Returns a boolean whether folders were deleted"""
     free_space = get_remaining_space()
-    
+
     if free_space <= constants.DELETE_WHEN_LESS_AVAILABLE:
         clear_up_downloads()
         return True
@@ -71,24 +72,24 @@ def clear_space_if_needed() -> True:
 
 def _does_file_exists(video_id: str, filename: str) -> bool:
     video_ids = get_downloaded_video_ids()
-    
+
     if video_id not in video_ids:
         # Video not downloaded
         return False
-    
+
     folder = config.OUTPUT_FOLDER / video_id
     audio_file = folder / filename
-    
+
     if not audio_file.exists():
         # Folder probably emptied
         return False
-    
+
     return True
 
 
 def get_downloaded_video_ids() -> Set[str]:
     config.OUTPUT_FOLDER.mkdir(parents=True, exist_ok=True)
-    
+
     return {
         folder.name for folder in config.OUTPUT_FOLDER.iterdir() if folder.is_dir()
     }

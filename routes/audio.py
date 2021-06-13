@@ -33,17 +33,18 @@ async def download_audio(
                              default=config.DEFAULT_AUDIO_QUALITY),
         skip_segments: bool = config.DEFAULT_SKIP_SEGMENTS,
 ):
-    redirect = RedirectResponse(url=build_audio_url(video_id, skip_segments, False))
-    
+    redirect = RedirectResponse(
+        url=build_audio_url(video_id, skip_segments, False))
+
     if is_audio_downloaded(video_id, skip_segments):
         return redirect
-    
+
     process_audio_download(
         video_id=video_id,
         skip_segments=skip_segments,
         quality=quality,
     )
-    
+
     return redirect
 
 
@@ -63,22 +64,23 @@ async def extract_instrumental(
         ),
         skip_segments: bool = config.DEFAULT_SKIP_SEGMENTS,
 ):
-    redirect = RedirectResponse(url=build_audio_url(video_id, skip_segments, True))
-    
+    redirect = RedirectResponse(
+        url=build_audio_url(video_id, skip_segments, True))
+
     if is_audio_extracted(video_id, skip_segments):
         return redirect
-    
+
     if not is_audio_downloaded(video_id, skip_segments):
         process_audio_download(
             video_id=video_id,
             skip_segments=skip_segments,
         )
-    
+
     process_audio_extraction(
         video_id=video_id,
         skip_segments=skip_segments
     )
-    
+
     return redirect
 
 
