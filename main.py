@@ -11,7 +11,7 @@ def get_application() -> FastAPI:
         debug=config.IS_DEBUG,
         title="NoVoicePlease Server",
     )
-    
+
     application.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
@@ -19,12 +19,14 @@ def get_application() -> FastAPI:
         allow_methods=["GET"],
         allow_headers=[],
     )
-    
+
     application.include_router(router)
-    
-    application.mount("/static", StaticFiles(directory="static"), name="static")
-    application.mount("/", StaticFiles(directory="static"), name="static-direct")
-    
+
+    application.mount(
+        "/static", StaticFiles(directory="static"), name="static")
+    application.mount("/", StaticFiles(directory="static"),
+                      name="static-direct")
+
     return application
 
 
@@ -33,5 +35,5 @@ app = get_application()
 if __name__ == "__main__":
     if config.IS_DEBUG:
         import uvicorn
-        
+
         uvicorn.run(app, port=5612)

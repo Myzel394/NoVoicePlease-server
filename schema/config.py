@@ -27,7 +27,7 @@ class ConfigSchema(BaseModel):
                 "default_skip_segments": True
             }
         }
-    
+
     version: str
     segments_api_url: str
     segments_categories: List[str]

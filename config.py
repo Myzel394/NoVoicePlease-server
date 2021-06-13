@@ -21,7 +21,8 @@ def value(name: str, default: str) -> str:
 # !!!ATTENTION!!!
 
 OUTPUT_FOLDER = Path.cwd().joinpath(value("OUTPUT_FOLDER", "./static/output"))
-SEGMENTS_API_URL = value("SEGMENTS_API_URL", "https://sponsor.ajay.app/api/skipSegments")
+SEGMENTS_API_URL = value(
+    "SEGMENTS_API_URL", "https://sponsor.ajay.app/api/skipSegments")
 SEGMENTS_CATEGORIES = value("SEGMENTS_CATEGORIES", "sponsor,intro,outro,selfpromo,interaction,music_offtopic") \
     .split(",")
 IS_DEBUG = bool(int(value("DEBUG", "0")))

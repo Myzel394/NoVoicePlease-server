@@ -22,7 +22,7 @@ def build_segments_url(video_id: str) -> str:
     # API needs unquoted query
     query = urllib.parse.unquote_plus(query)
     url = f"{config.SEGMENTS_API_URL}{query}"
-    
+
     return url
 
 
@@ -36,10 +36,10 @@ def parse_segment(data: List[dict]) -> List[Segment]:
 def get_segments(video_id: str) -> List[Segment]:
     url = build_segments_url(video_id)
     response = requests.get(url)
-    
+
     if not (200 <= response.status_code < 300):
         return []
-    
+
     segments = parse_segment(response.json())
-    
+
     return segments

@@ -25,5 +25,5 @@ class DownloadedSchema(BaseModel):
                 ]
             }
         }
-    
+
     stored_ids: List[str]

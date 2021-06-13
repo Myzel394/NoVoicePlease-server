@@ -32,13 +32,13 @@ def download_and_extract_video(filename: str, video_id: str, quality: int) -> No
         filename=filename,
         quality=quality
     )
-    
+
     clear_space_if_needed()
-    
+
     with YoutubeDL(options) as downloader:
         def download():
             downloader.download([video_id])
-        
+
         for _ in range(constants.DOWNLOAD_RETRY_AMOUNT):
             try:
                 download()
@@ -53,15 +53,15 @@ def process_audio_download(
 ) -> None:
     filename = build_audio_filename(skip_segments, False)
     path = build_audio_output_path(video_id=video_id, filename=filename)
-    
+
     path.parent.mkdir(exist_ok=True, parents=True)
-    
+
     download_and_extract_video(
         filename=filename,
         video_id=video_id,
         quality=quality
     )
-    
+
     if skip_segments:
         trim_audio_from_sponsorblock(
             audio=path,
