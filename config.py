@@ -20,7 +20,7 @@ def value(name: str, default: str) -> str:
 # all correct)
 # !!!ATTENTION!!!
 
-OUTPUT_FOLDER = Path.cwd().joinpath(value("OUTPUT_FOLDER", "./static/output"))
+OUTPUT_FOLDER = Path.cwd().joinpath(value("OUTPUT_FOLDER", "./static/output")).relative_to(BASE_FOLDER)
 SEGMENTS_API_URL = value("SEGMENTS_API_URL", "https://sponsor.ajay.app/api/skipSegments")
 SEGMENTS_CATEGORIES = value("SEGMENTS_CATEGORIES", "sponsor,intro,outro,selfpromo,interaction,music_offtopic") \
     .split(",")
