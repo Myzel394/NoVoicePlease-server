@@ -11,7 +11,7 @@ from constants import DELETE_AMOUNT_ON_DELETE_FUNCTION_CALL, TEMP_PATH
 __all__ = [
     "get_downloaded_video_ids", "is_audio_downloaded", "is_audio_extracted", "build_audio_filename",
     "build_audio_output_path", "generate_random_identifier", "generate_temp_folder", "clear_up_downloads",
-    "get_remaining_space", "clear_space_if_needed"
+    "get_remaining_space", "clear_disk_space", "build_thumbnail_path", "_build_temp_thumbnail_path"
 ]
 
 # Allowed characters for folders and file names
@@ -30,11 +30,19 @@ INSTRUMENTAL_MAP = {
 
 
 def build_audio_filename(skip_segments: bool, instrumental: bool) -> str:
-    return f"audio_{SKIP_SEGMENTS_MAP[skip_segments]}_{INSTRUMENTAL_MAP[instrumental]}.wav"
+    return f"audio_{SKIP_SEGMENTS_MAP[skip_segments]}_{INSTRUMENTAL_MAP[instrumental]}.m4a"
 
 
 def build_audio_output_path(video_id: str, filename: str) -> Path:
     return config.OUTPUT_FOLDER / video_id / filename
+
+
+def build_thumbnail_path(video_id: str) -> Path:
+    return config.OUTPUT_FOLDER / video_id / "thumbnail.jpg"
+
+
+def _build_temp_thumbnail_path(video_id: str, filename: str) -> Path:
+    return config.OUTPUT_FOLDER / video_id / (filename + ".webp")
 
 
 def generate_random_identifier() -> str:
@@ -59,7 +67,7 @@ def get_remaining_space() -> int:
     return free
 
 
-def clear_space_if_needed() -> True:
+def clear_disk_space() -> True:
     """Returns a boolean whether folders were deleted"""
     free_space = get_remaining_space()
     

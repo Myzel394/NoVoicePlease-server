@@ -9,13 +9,16 @@ from .folder import generate_random_identifier
 from .segments import get_segments, Segment
 
 __all__ = [
-    "trim_audio_with_segments", "trim_audio_from_sponsorblock"
+    "trim_audio_with_segments", "trim_audio_from_sponsorblock", "get_segments"
 ]
 
 
 # Input: [(10, 15)], 20
 # Output: [(0, 10), (15, 20)]
 def get_true_audio_segments(non_audio_segments: List[Segment], duration: float) -> List[Segment]:
+    if len(non_audio_segments) == 0:
+        return []
+
     true_audio_segments = []
     
     # Gets times for previous true audio segments
@@ -53,7 +56,7 @@ def get_segments_as_duration(segments: List[Segment]) -> List[Segment]:
 def prepare_ffmpeg_trim_command(segments: List[Segment], filename: str, video_id: str) -> Tuple[str, List[Path]]:
     # Filenames of true audio segments
     filenames = [
-        f"{video_id}_{index}_{start}_{duration}.wav"
+        f"{video_id}_{index}_{start}_{duration}.m4a"
         for index, (start, duration) in enumerate(segments)
     ]
     filenames_with_folder = [
@@ -84,7 +87,7 @@ def prepare_ffmpeg_concatenate_command(files: List[Path], output: Path) -> Tuple
     return command, file
 
 
-def trim_audio_with_segments(
+async def trim_audio_with_segments(
         segments: List[Segment],
         audio: Path,
         output: Path,
@@ -121,15 +124,15 @@ def trim_audio_with_segments(
         file.unlink(missing_ok=True)
 
 
-def trim_audio_from_sponsorblock(
+async def trim_audio_from_sponsorblock(
         audio: Path,
         output: Path,
         video_id: str
 ) -> None:
-    segments = get_segments(video_id)
+    segments = await get_segments(video_id)
     
     if len(segments) > 0:
-        trim_audio_with_segments(
+        await trim_audio_with_segments(
             segments=segments,
             audio=audio,
             output=output,

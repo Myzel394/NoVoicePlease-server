@@ -1,9 +1,11 @@
 import shutil
+import subprocess
 from pathlib import Path
 
 from spleeter.separator import Separator
 
 import constants
+from . import add_metadata_from_youtube
 from .folder import build_audio_filename, build_audio_output_path, generate_temp_folder
 
 __all__ = [
@@ -14,7 +16,7 @@ DEFAULT_SEPARATOR = Separator(constants.SPLEETER_SEPARATION_METHOD)
 INSTRUMENTAL_FILENAME = constants.SPLEETER_TARGETED_FILE
 
 
-def extract_audio(
+async def extract_audio(
         audio: Path,
         output: Path,
 ) -> None:
@@ -32,14 +34,15 @@ def extract_audio(
     # Find correct file
     child_directory = next(folder.iterdir())
     file = folder / child_directory / INSTRUMENTAL_FILENAME
-    
-    shutil.move(str(file), str(output))
+
+    # Convert file
+    subprocess.Popen(["ffmpeg", "-y", "-i", file.absolute(), output.absolute()]).wait()
     
     # Clean up
     shutil.rmtree(str(folder))
 
 
-def process_audio_extraction(
+async def process_audio_extraction(
         video_id: str,
         skip_segments: bool,
 ) -> None:
@@ -49,7 +52,12 @@ def process_audio_extraction(
     instrumental_filename = build_audio_filename(skip_segments=skip_segments, instrumental=True)
     instrumental_file_path = build_audio_output_path(video_id, filename=instrumental_filename)
     
-    extract_audio(
+    await extract_audio(
         audio=original_file_path,
         output=instrumental_file_path,
+    )
+
+    await add_metadata_from_youtube(
+        video_id=video_id,
+        path=instrumental_file_path,
     )

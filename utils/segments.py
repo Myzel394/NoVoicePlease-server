@@ -33,7 +33,7 @@ def parse_segment(data: List[dict]) -> List[Segment]:
     ]
 
 
-def get_segments(video_id: str) -> List[Segment]:
+async def get_segments(video_id: str) -> List[Segment]:
     url = build_segments_url(video_id)
     response = requests.get(url)
     

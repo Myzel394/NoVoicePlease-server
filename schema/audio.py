@@ -1,10 +1,10 @@
+from datetime import datetime
 from typing import *
 
 from pydantic import BaseModel
 
 __all__ = [
-    "StatusSchema",
-    "DownloadedSchema"
+    "StatusSchema", "InformationSchema", "DownloadedSchema", "TooLongSchema"
 ]
 
 
@@ -13,6 +13,23 @@ class StatusSchema(BaseModel):
     normal_skipped_segments: bool
     instrumental_full: bool
     instrumental_skipped_segments: bool
+
+
+class InformationSchema(BaseModel):
+    non_audio_segments: List[
+        Tuple[float, float]
+    ]
+    album: Optional[str]
+    artist: Optional[str]
+    composer: Optional[str]
+
+    title: str
+    description: str
+    categories: List[str]
+    upload_date: datetime
+    view_count: int
+    like_count: Optional[int]
+    dislike_count: Optional[int]
 
 
 class DownloadedSchema(BaseModel):
@@ -27,3 +44,7 @@ class DownloadedSchema(BaseModel):
         }
     
     stored_ids: List[str]
+
+
+class TooLongSchema(BaseModel):
+    detail: str
