@@ -1,10 +1,12 @@
 from datetime import datetime
+from functools import lru_cache
 from pathlib import Path
 from typing import *
 
 import music_tag
-from youtube_dl import YoutubeDL
+from async_lru import alru_cache
 
+from .invidious import instance
 from .folder import build_thumbnail_path
 from .audio_trim import get_segments
 
@@ -26,12 +28,11 @@ AUDIO_INFORMATION_YDL_OPTIONS = {
 
 def map_youtubedl_result_to_metadata(result):
     return {
-        "album": result.get("album"),
-        "artist": result.get("artist", result.get("channel")),
-        "composer": result.get("creator"),
+        "artist": result.get("author"),
+
         "comment": result.get("description"),
-        "genre": result["categories"][0] if result.get("categories") else None,
-        "year": result["upload_date"][:4],
+        "genre": result.get("genre", result.get("categories")),
+        "year": datetime.utcfromtimestamp(result["published"]).year,
         "title": result["title"],
     }
 
@@ -40,17 +41,15 @@ async def map_youtubedl_result_to_information(result, video_id: str):
     non_audio_segments = await get_segments(video_id)
 
     return {
-        "album": result.get("album"),
-        "artist": result.get("artist", result.get("channel")),
-        "composer": result.get("creator"),
+        "channel": result.get("author"),
 
         "title": result["title"],
-        "description": result["description"],
-        "categories": result["categories"],
-        "upload_date": datetime.strptime(result["upload_date"], "%Y%m%d"),
-        "view_count": result["view_count"],
-        "like_count": result.get("like_count"),
-        "dislike_count": result.get("dislike_count"),
+        "description": result["descriptionHtml"],
+        "upload_date": datetime.utcfromtimestamp(result["published"]),
+        "view_count": result["viewCount"],
+        "like_count": result.get("likeCount"),
+        "dislike_count": result.get("dislikeCount"),
+        "tags": result.get("keywords", []),
 
         "non_audio_segments": non_audio_segments
     }
@@ -93,12 +92,11 @@ async def add_metadata(
     music.save()
 
 
+@alru_cache()
 async def download_video_information(video_id: str):
-    with YoutubeDL(AUDIO_INFORMATION_YDL_OPTIONS) as downloader:
-        result = downloader.extract_info(
-            video_id,
-            download=False,
-        )
+    endpoint = f"/api/v1/videos/{video_id}"
+
+    result = instance.get(endpoint)
 
     return result
 

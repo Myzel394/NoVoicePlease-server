@@ -6,3 +6,4 @@ from .folder import *
 from .segments import *
 from .url import *
 from .validation import *
+from .invidious import *

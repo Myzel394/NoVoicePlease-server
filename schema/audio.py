@@ -19,17 +19,15 @@ class InformationSchema(BaseModel):
     non_audio_segments: List[
         Tuple[float, float]
     ]
-    album: Optional[str]
-    artist: Optional[str]
-    composer: Optional[str]
+    channel: str
 
     title: str
     description: str
-    categories: List[str]
     upload_date: datetime
     view_count: int
     like_count: Optional[int]
     dislike_count: Optional[int]
+    tags: List[str]
 
 
 class DownloadedSchema(BaseModel):

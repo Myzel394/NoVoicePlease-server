@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from fastapi import HTTPException
 
 import config
@@ -11,7 +13,7 @@ __all__ = [
 async def is_video_too_long(video_id: str) -> bool:
     result = await download_video_information(video_id)
 
-    return result["duration"] > config.MAX_AUDIO_LENGTH
+    return result["lengthSeconds"] > config.MAX_AUDIO_LENGTH
 
 
 async def raise_for_length(video_id: str) -> None:
