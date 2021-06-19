@@ -24,7 +24,8 @@ class ConfigSchema(BaseModel):
                 "default_audio_quality": 320,
                 "min_audio_quality": 65,
                 "max_audio_quality": 320,
-                "default_skip_segments": True
+                "default_skip_segments": True,
+                "max_audio_length": 360,
             }
         }
     
@@ -35,3 +36,4 @@ class ConfigSchema(BaseModel):
     min_audio_quality: int
     max_audio_quality: int
     default_skip_segments: bool
+    max_audio_length: int

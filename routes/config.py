@@ -2,7 +2,7 @@ from fastapi import APIRouter
 
 from config import (
     DEFAULT_AUDIO_QUALITY, DEFAULT_SKIP_SEGMENTS, MAX_AUDIO_QUALITY, MIN_AUDIO_QUALITY, SEGMENTS_API_URL,
-    SEGMENTS_CATEGORIES,
+    SEGMENTS_CATEGORIES, MAX_AUDIO_LENGTH
 )
 from constants import VERSION
 from schema import ConfigSchema
@@ -26,5 +26,6 @@ async def config():
         "default_audio_quality": DEFAULT_AUDIO_QUALITY,
         "min_audio_quality": MIN_AUDIO_QUALITY,
         "max_audio_quality": MAX_AUDIO_QUALITY,
-        "default_skip_segments": DEFAULT_SKIP_SEGMENTS
+        "default_skip_segments": DEFAULT_SKIP_SEGMENTS,
+        "max_audio_length": MAX_AUDIO_LENGTH,
     }
